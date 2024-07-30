@@ -82,14 +82,9 @@ class SparseMatrix:
 
     def __eq__(self, other):
         changed = False
-        if self.intern_represent == 'CSR':
-            if other.intern_represent != 'CSR':
-                other.change_representation()
-                changed = True
-        else:
-            if other.intern_represent != 'CSC':
-                other.change_representation()
-                changed = True
+        if self.intern_represent != other.intern_represent:
+            other.change_representation()
+            changed = True
         _bool = (self.start_ind == other.start_ind) & (self.ind == other.ind) \
                         & (self.val == other.val)
         if (changed):
@@ -152,6 +147,9 @@ test2 = SparseMatrix(matrix1)
 test2.change_representation()
 
 print(test1.intern_represent)
+
+test1.change_representation()
+test2.change_representation()
 
 print(test2 == test1)
 
