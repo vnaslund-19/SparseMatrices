@@ -81,14 +81,19 @@ class SparseMatrix:
         self.normalize_indices()
 
     def __eq__(self, other):
+        changed = False
         if self.intern_represent == 'CSR':
             if other.intern_represent != 'CSR':
                 other.change_representation()
+                changed = True
         else:
             if other.intern_represent != 'CSC':
                 other.change_representation()
+                changed = True
         _bool = (self.start_ind == other.start_ind) & (self.ind == other.ind) \
                         & (self.val == other.val)
+        if (changed):
+            other.change_representation()
         return _bool
 
     def print_dense(self):
@@ -144,15 +149,12 @@ test1 = SparseMatrix(matrix1)
 
 test2 = SparseMatrix(matrix1)
 
-# test change_element with CSR & CSC
-test2.change_element(2, 3, 400)
-print(test2)
 test2.change_representation()
-test2.change_element(2, 3, 500)
-test2.change_representation()
-print(test2)
 
-print(test1 == test2) # Should be false
-# Restore matrix to test equality
-test2.change_element(2, 3, 60)
-print(test1 == test2) # Should be true
+print(test1.intern_represent)
+
+print(test2 == test1)
+
+print(test1.intern_represent)
+
+
