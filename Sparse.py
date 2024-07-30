@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.sparse import csr_matrix
+#from scipy.sparse import csr_matrix
 
 class SparseMatrix:
     def __init__(self, matrix, tol=1e-08):
@@ -8,6 +8,7 @@ class SparseMatrix:
         self.normalize_indices()
         self.intern_represent = 'CSR'
         self.number_of_nonzero = len(self.val)
+        self.tol = tol
         # To not lose dim while changing representation and check matching dim for mult.
         self.shape = matrix.shape
 
@@ -96,13 +97,94 @@ class SparseMatrix:
             other.change_representation()
         return _bool
 
-    def print_dense(self):
+    def __add__(self, other):
+        changed = False
+        if self.intern_represent != other.intern_represent:
+            other.change_representation()
+            changed = True
+
+        # Ensure both matrices have the same dimensions
         if self.intern_represent == 'CSR':
-            n_rows = len(self.start_ind) - 1
-            n_cols = max(self.ind) + 1 if self.ind else 0
-        else:
-            n_cols = len(self.start_ind) - 1
-            n_rows = max(self.ind) + 1 if self.ind else 0
+            n_rows_self = len(self.start_ind) - 1
+            n_cols_self = max(self.ind) + 1 if self.ind else 0
+            n_rows_other = len(other.start_ind) - 1
+            n_cols_other = max(other.ind) + 1 if other.ind else 0
+        else:  # CSC
+            n_cols_self = len(self.start_ind) - 1
+            n_rows_self = max(self.ind) + 1 if self.ind else 0
+            n_cols_other = len(other.start_ind) - 1
+            n_rows_other = max(other.ind) + 1 if other.ind else 0
+
+        # Raise an error if the dimensions do not match
+        if n_rows_self != n_rows_other or n_cols_self != n_cols_other:
+            if changed:
+                other.change_representation()  # Restore the original representation
+            raise ValueError("Matrices must have the same dimensions.")
+
+        val = []  # List to store the values of the result matrix
+        ind = []  # List to store the indices of the result matrix
+        start_ind = [0]  # List to store the start indices for the result matrix
+
+        if self.intern_represent == 'CSR':
+            # Iterate over each row
+            for i in range(n_rows_self):
+                row_dict = {}
+                # Add elements from the self matrix to the row_dict
+                for j in range(self.start_ind[i], self.start_ind[i + 1]):
+                    col = self.ind[j]
+                    row_dict[col] = self.val[j]
+                # Add elements from the other matrix to the row_dict
+                for j in range(other.start_ind[i], other.start_ind[i + 1]):
+                    col = other.ind[j]
+                    if col in row_dict:
+                        row_dict[col] += other.val[j]
+                    else:
+                        row_dict[col] = other.val[j]
+                # Append the combined row to the val and ind lists
+                for col in sorted(row_dict.keys()):
+                    if abs(row_dict[col]) > self.tol:  # if added values are close to 0 make them 0
+                        val.append(row_dict[col])
+                        ind.append(col)
+                start_ind.append(len(val))
+        else:  # CSC
+            # Iterate over each column
+            for i in range(n_cols_self):
+                col_dict = {}
+                # Add elements from the self matrix to the col_dict
+                for j in range(self.start_ind[i], self.start_ind[i + 1]):
+                    row = self.ind[j]
+                    col_dict[row] = self.val[j]
+                # Add elements from the other matrix to the col_dict
+                for j in range(other.start_ind[i], other.start_ind[i + 1]):
+                    row = other.ind[j]
+                    if row in col_dict:
+                        col_dict[row] += other.val[j]
+                    else:
+                        col_dict[row] = other.val[j]
+                # Append the combined column to the val and ind lists
+                for row in sorted(col_dict.keys()):
+                    if abs(col_dict[row]) > 1e-08:  # if added values are close to 0 make them 0
+                        val.append(col_dict[row])
+                        ind.append(row)
+                start_ind.append(len(val))
+
+        # Create a new SparseMatrix object with the combined data
+        result = SparseMatrix.__new__(SparseMatrix)
+        result.val = val
+        result.ind = ind
+        result.start_ind = start_ind
+        result.intern_represent = self.intern_represent
+        result.shape = self.shape
+        result.number_of_nonzero = len(val)
+
+        # Restore the original representation of the other matrix if it was changed
+        if changed:
+            other.change_representation()
+
+        return result
+
+    def print_dense(self):
+        n_rows, n_cols = self.shape
 
         # init with all zeros
         dense_matrix = np.zeros((n_rows, n_cols))
@@ -148,16 +230,14 @@ matrix1 = np.array([[10, 20, 0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0, 0, 0]])
 
 test1 = SparseMatrix(matrix1)
-test1.change_representation()
 
 test2 = SparseMatrix(matrix1)
 
-test2.change_representation()
+test2.change_element(1, 1, 10)
 
 print(test1.intern_represent)
 
-test1.change_representation()
 test2.change_representation()
 
-print(test2 == test1)
+print(test2 + test1)
 
