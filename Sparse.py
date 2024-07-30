@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.sparse import csr_matrix
 
 class SparseMatrix:
     def __init__(self, matrix, tol=1e-08):
@@ -7,6 +8,8 @@ class SparseMatrix:
         self.normalize_indices()
         self.intern_represent = 'CSR'
         self.number_of_nonzero = len(self.val)
+        # To not lose dim while changing representation and check matching dim for mult.
+        self.shape = matrix.shape
 
     def convert_matrix_to_csr(self, matrix, tol):
         val = [] # list to store non-zero values
@@ -60,13 +63,7 @@ class SparseMatrix:
 
 
     def change_representation(self):
-        if self.intern_represent == 'CSR':
-            self.intern_represent = 'CSC'
-        else:
-            self.intern_represent = 'CSR'
-
         val, ind, start_ind = [], [], [0]
-
         n_col = max(self.ind) + 1
         for col in range(n_col):
             col_val_ind = np.where(np.array(self.ind) == col)[0].tolist()
@@ -77,6 +74,14 @@ class SparseMatrix:
                     ind.append(np.searchsorted(self.start_ind, c_ind, side='right')-1)
             else:
                 continue
+        if self.intern_represent == 'CSR':
+            if len(start_ind) != self.shape[1] + 1:
+                start_ind = start_ind+[start_ind[-1]]*(self.shape[1]-len(start_ind) + 1)
+            self.intern_represent = 'CSC'
+        else:
+            if len(start_ind) != self.shape[0] + 1:
+                start_ind = start_ind+[start_ind[-1]]*(self.shape[0]-len(start_ind) + 1)
+            self.intern_represent = 'CSR'
         self.val, self.ind, self.start_ind = val, ind, start_ind
         self.normalize_indices()
 
@@ -135,12 +140,15 @@ class SparseMatrix:
 # test area.
 
 # Test change elements.
-matrix1 = np.array([[10, 20, 0, 0, 0, 0], 
-                    [0, 30, 0, 40, 0, 0], 
-                    [0, 0, 50, 60, 70, 0],
-                    [0, 0, 0, 0, 0, 80]])
+matrix1 = np.array([[10, 20, 0, 0, 0, 0, 0],
+                    [0, 30, 0, 40, 0, 0, 0],
+                    [0, 0, 50, 60, 70, 0, 0],
+                    [0, 0, 0, 0, 0, 80, 0],
+                    [0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0]])
 
 test1 = SparseMatrix(matrix1)
+test1.change_representation()
 
 test2 = SparseMatrix(matrix1)
 
@@ -152,7 +160,4 @@ test1.change_representation()
 test2.change_representation()
 
 print(test2 == test1)
-
-print(test1.intern_represent)
-
 
