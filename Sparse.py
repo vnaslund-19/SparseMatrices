@@ -200,6 +200,44 @@ class SparseMatrix:
                     row = self.ind[j] # Row index for the non-zero element
                     dense_matrix[row, i] = self.val[j]
         print(dense_matrix)
+    def toeplitz(self,n):
+        val = [] # list to store non-zero values
+        col_ind = [] # stores the column index of its corresponding non-zero value
+        row_start_ind = [0] # stores the index of val/col_ind where each row starts & ends
+        for i in range(n):
+           for j in range(n):
+               if i==0:
+                   val.append(2)
+                   col_ind.append(0)
+                   val.append(-1)
+                   col_ind.append(1)
+                   if j==0 or j==1:
+                       pass
+                   else:
+                       val.append(0)
+                       col_ind.append(0)
+               elif i==1:
+                   val.append(-1)
+                   col_ind.append(0)
+                   val.append(2)
+                   col_ind.append(1)
+                   val.append(-1)
+                   col_ind.append(2)
+                   if j==0 or j==1 or j==2:
+                       pass
+                   else:
+                       val.append(0)
+               for m in range(j-1):
+                   val.append(0)
+               val.append(-1)
+               col_ind.append(j-1)
+               val.append(2)
+               col_ind.append(j)
+               val.append(-1)
+               col_ind.append(j+1)
+               #for q in range(j-m):
+               #    val.append(0)   
+        return val, col_ind, row_start_ind
 
     def print_internal_arrays(self):
         print(f"val: {self.val}")
