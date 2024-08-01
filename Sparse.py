@@ -9,7 +9,7 @@ class SparseMatrix:
         self.intern_represent = 'CSR'
         self.number_of_nonzero = len(self.val)
         self.tol = tol
-        # To not lose dim while changing representation and check matching dim for mult.
+        # To not lose dim while changing representation and check matching dim operations.
         self.shape = matrix.shape
 
     def convert_matrix_to_csr(self, matrix, tol):
@@ -27,6 +27,9 @@ class SparseMatrix:
         self.ind = [int(i) for i in self.ind]
 
     def change_element(self, i, j, a_ij):  # a_ij is the value to be inserted, i is row, j is col
+        # Raise an error if (i, j) is outside of dim.
+        if i+1 > self.shape[0] or j+1 > self.shape[1]:
+            raise IndexError("Trying to insert value outside of the matrix dimension.")
         if self.intern_represent == 'CSR':
             # CSR: i is row index, j is column index
             start_i = self.start_ind[i]  # start of row i
@@ -87,40 +90,35 @@ class SparseMatrix:
         self.normalize_indices()
 
     def __eq__(self, other):
-        changed = False
-        if self.intern_represent != other.intern_represent:
-            other.change_representation()
-            changed = True
-        _bool = (self.start_ind == other.start_ind) & (self.ind == other.ind) \
-                        & (self.val == other.val)
-        if (changed):
-            other.change_representation()
+        # False if dim does not match.
+        if self.shape != other.shape:
+            _bool = False
+        else:
+            changed = False
+            if self.intern_represent != other.intern_represent:
+                other.change_representation()
+                changed = True
+            _bool = (self.start_ind == other.start_ind) & (self.ind == other.ind) \
+                            & (self.val == other.val)
+            if (changed):
+                other.change_representation()
         return _bool
 
     def __add__(self, other):
+        # Raise an error if the dimensions do not match
+        if self.shape != other.shape:
+            raise ValueError("Matrices must have the same dimensions.")
+
         changed = False
         if self.intern_represent != other.intern_represent:
             other.change_representation()
             changed = True
-
-        # Ensure both matrices have the same dimensions
         if self.intern_represent == 'CSR':
             n_rows_self = len(self.start_ind) - 1
             n_cols_self = max(self.ind) + 1 if self.ind else 0
-            n_rows_other = len(other.start_ind) - 1
-            n_cols_other = max(other.ind) + 1 if other.ind else 0
         else:  # CSC
             n_cols_self = len(self.start_ind) - 1
             n_rows_self = max(self.ind) + 1 if self.ind else 0
-            n_cols_other = len(other.start_ind) - 1
-            n_rows_other = max(other.ind) + 1 if other.ind else 0
-
-        # Raise an error if the dimensions do not match
-        if n_rows_self != n_rows_other or n_cols_self != n_cols_other:
-            if changed:
-                other.change_representation()  # Restore the original representation
-            raise ValueError("Matrices must have the same dimensions.")
-
         val = []  # List to store the values of the result matrix
         ind = []  # List to store the indices of the result matrix
         start_ind = [0]  # List to store the start indices for the result matrix
@@ -227,7 +225,7 @@ matrix1 = np.array([[10, 20, 0, 0, 0, 0, 0],
                     [0, 0, 50, 60, 70, 0, 0],
                     [0, 0, 0, 0, 0, 80, 0],
                     [0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0]])
+                    [0, 0, 0, 0, 0, 0, 0]]
 
 test1 = SparseMatrix(matrix1)
 
