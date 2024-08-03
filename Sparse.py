@@ -262,6 +262,94 @@ class SparseMatrix:
 
 
 
+
+
+
+#Task 10
+def task10():
+    #Test with small matrices
+
+    matrixSmall1 = np.array([[10, 20, 0, 0, 0, 0, 0],
+                        [0, 30, 0, 40, 0, 0, 0],
+                        [0, 0, 50, 60, 70, 0, 0],
+                        [0, 0, 0, 0, 0, 80, 0],
+                        [0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0]])
+
+    matrixSmall2 = np.array([[10, 20, 0, 0, 0, 0, 0],
+                        [0, 30, 0, 40, 0, 0, 0],
+                        [0, 0, 50, 60, 70, 0, 0],
+                        [0, 0, 0, 0, 0, 80, 0],
+                        [0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0]])
+
+    matrixSparce1 = SparseMatrix(matrixSmall1)
+    matrixSparce2 = SparseMatrix(matrixSmall2)
+
+    #Prints dense matrix
+    matrixSparce1.print_dense()
+    print("\n\n\n")
+
+    #Prints internal arrays
+    matrixSparce1.print_internal_arrays()
+    print("\n\n\n")
+
+    #Test whether these two sparce matrices are the same
+    print(matrixSparce1 == matrixSparce2)
+    print("\n\n\n")
+
+    #Change element and print the new dense matrix
+    matrixSparce1.change_element(2,6,88)
+    matrixSparce1.print_dense()
+    print("\n\n\n")
+
+    #Test whether these two sparce matrices still are the same
+    print(matrixSparce1 == matrixSparce2)
+    print("\n\n\n")
+
+    #Test representation, change it and then test again
+    print(matrixSparce1.intern_represent)
+    print("\n\n\n")
+    matrixSparce1.change_representation()
+    print(matrixSparce1.intern_represent)
+    print("\n\n\n")
+
+    #Add two sparse matrices together
+    matrixSum = matrixSparce1 + matrixSparce2
+    matrixSum.print_dense()
+    print("\n\n\n")
+
+    #Multiply a sparse matrix with a vector
+
+
+
+
+    #Test tolerance init-method, one matrix with a value above and one below
+    matrixSmall4 = np.array([[1e-10, 0, 0],
+                             [0, 1, 0],
+                             [0, 0, 0]])
+    matrixSparce4 = SparseMatrix(matrixSmall4)
+    matrixSparce4.print_dense()
+    print("\n\n\n")
+    matrixSparce4.change_element(0,0,1e-7) 
+    matrixSparce4.print_dense()
+    print("\n\n\n")
+
+    ###########################
+
+    #Test with toeplitz matrixes
+
+
+
+
+
+
+
+
+
+
+
+
 ################################
 
 # test area.
