@@ -268,7 +268,6 @@ class SparseMatrix:
 #Task 10
 def task10():
     #Test with small matrices
-
     matrixSmall1 = np.array([[10, 20, 0, 0, 0, 0, 0],
                         [0, 30, 0, 40, 0, 0, 0],
                         [0, 0, 50, 60, 70, 0, 0],
@@ -336,10 +335,98 @@ def task10():
     print("\n\n\n")
 
     ###########################
+    #Test with toeplitz matrixes    Obs, utgår ifrån att toeplitz(n) endast har argumentet n och att den returnerar en SparceMatrix
 
-    #Test with toeplitz matrixes
+    toeplitz10 = SparseMatrix.toeplitz(9)
+    toeplitz100 = SparseMatrix.toeplitz(99)
+    toeplitz10000 = SparseMatrix.toeplitz(9999)
+    
+    #Prints dense matrix
+    toeplitz10.print_dense()
+    print("\n\n\n")
+    toeplitz100.print_dense()  
+    print("\n\n\n")
+    toeplitz10000.print_dense()  
+    print("\n\n\n")
+    
+    #Prints internal arrays
+    toeplitz10.print_internal_arrays() 
+    print("\n\n\n")
+    toeplitz100.print_internal_arrays() 
+    print("\n\n\n")
+    #toeplitz10000.print_internal_arrays() #Enorm utskrift, hur annars testa dom stora?
+    print("\n\n\n")
 
+    #Test whether these two sparce matrices are the same
+    print(toeplitz10000 == toeplitz100)
+    print("\n\n\n")
 
+    #add toeplitz
+    toeplitzSum = toeplitz10 + toeplitz10
+    toeplitzSum.print_dense()
+    print("\n\n\n")
+    
+    #multiply toeplitz
+    
+    
+    
+
+    #Change element and print the new dense matrix
+    toeplitz10.change_element(2,6,88)
+    toeplitz10.print_dense()
+    print("\n\n\n")
+    
+#Task 11                 Provisoriskt testexempel
+def task11():
+    testMatrix1 = np.array([[20, 40, 0, 0, 5, 0, 0],
+    [0, 60, 0, 80, 0, 0, 0],
+    [0, 0, 100, 12, 140, 0, 88],
+    [0, 234, 0, 0, 0, 16, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [7, 0, 0, 3, 0, 0, 0]])
+    
+    testMatrix2 = np.array([[2, 5, 2, 0, 77, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 14, 0, 11],
+    [0, 234, 0, 0, 0, 6, 0],
+    [0, 0, 0, 0, 5, 0, 0],
+    [2, 0, 0, 378, 0, 3, 0]])
+    
+    sparseTest1 = SparseMatrix(testMatrix1)
+    sparseTest2 = SparseMatrix(testMatrix2)
+    
+    scipyTest1 = csr_matrix(testMatrix1)
+    scipyTest2 = csr_matrix(testMatrix2)
+    
+    #Insert element
+    start = time.time()
+    sparseTest1.change_element(1, 6, 100)
+    stop = time.time()
+    sparseElement = stop-start
+
+    start = time.time()
+    scipyTest1[1,6] = 100
+    stop = time.time()
+    scipyElement = stop-start
+
+    #Sum of matrices
+    start = time.time()
+    sparseTest1+sparseTest2
+    stop = time.time()
+    sparseResult = stop-start
+    
+    start = time.time()
+    scipyTest1+scipyTest2
+    stop = time.time()
+    scipyResult = stop-start
+
+    #Multiply matrix with vector
+               
+        
+        
+        
+    print(f"Insert element times\nSparseMatrix: {sparseElement}\nScipy: {scipyElement}\n\nSum of matrices time\nSparseMatrix: {sparseResult}\nScipy: {scipyResult}")
+        
 
 
 
