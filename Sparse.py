@@ -204,39 +204,48 @@ class SparseMatrix:
         val = [] # list to store non-zero values
         col_ind = [] # stores the column index of its corresponding non-zero value
         row_start_ind = [0] # stores the index of val/col_ind where each row starts & ends
+        q=0
         for i in range(n):
+           valset=False
            for j in range(n):
-               if i==0:
+               if i==0 and j==0:
                    val.append(2)
                    col_ind.append(0)
+                   valset=True
+               elif i==0 and j==1:    
                    val.append(-1)
                    col_ind.append(1)
-                   if j==0 or j==1:
-                       pass
-                   else:
-                       val.append(0)
-                       col_ind.append(0)
-               elif i==1:
+                   valset=True
+               elif i==1 and j==0:
                    val.append(-1)
                    col_ind.append(0)
+                   valset=True
+               elif i==1 and j==1:
                    val.append(2)
                    col_ind.append(1)
+                   valset=True
+               elif i==1 and j==2:
                    val.append(-1)
                    col_ind.append(2)
-                   if j==0 or j==1 or j==2:
-                       pass
-                   else:
-                       val.append(0)
-               for m in range(j-1):
-                   val.append(0)
-               val.append(-1)
-               col_ind.append(j-1)
-               val.append(2)
-               col_ind.append(j)
-               val.append(-1)
-               col_ind.append(j+1)
-               #for q in range(j-m):
-               #    val.append(0)   
+                   valset=True
+                 
+               if i==0 or i==1:
+                   pass
+               elif i==n-1 and j==n-2 and not valset:
+                    #q=q+1
+                    val.append(-1)
+                    col_ind.append(j)
+                    val.append(2)
+                    col_ind.append(j+1)
+               elif not valset and not i==n-1:
+                    q=q+1
+                    val.append(-1)
+                    col_ind.append(q)
+                    val.append(2)
+                    col_ind.append(q+1)
+                    val.append(-1)
+                    col_ind.append(q+2)
+                    valset=True
         return val, col_ind, row_start_ind
 
     def print_internal_arrays(self):
