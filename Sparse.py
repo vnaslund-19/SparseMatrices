@@ -200,44 +200,52 @@ class SparseMatrix:
                     row = self.ind[j] # Row index for the non-zero element
                     dense_matrix[row, i] = self.val[j]
         print(dense_matrix)
+        
     def toeplitz(self,n):
         val = [] # list to store non-zero values
         col_ind = [] # stores the column index of its corresponding non-zero value
-        row_start_ind = [0] # stores the index of val/col_ind where each row starts & ends
+        row_start_ind = [] # stores the index of val/col_ind where each row starts & ends
         q=0
-        for i in range(n):
+        rad=5
+        for i in range(n):     #for loop for the rows
            valset=False
-           for j in range(n):
-               if i==0 and j==0:
+           for j in range(n):   #for loop for the columns
+               if i==0 and j==0:   #First row and column
                    val.append(2)
                    col_ind.append(0)
+                   row_start_ind.append(0)
                    valset=True
-               elif i==0 and j==1:    
+               elif i==0 and j==1:    #First row second column
                    val.append(-1)
                    col_ind.append(1)
+                   row_start_ind.append(2)
                    valset=True
-               elif i==1 and j==0:
+               elif i==1 and j==0:  #Second row and first column
                    val.append(-1)
                    col_ind.append(0)
                    valset=True
-               elif i==1 and j==1:
+               elif i==1 and j==1:  #Second row and Second column
                    val.append(2)
                    col_ind.append(1)
                    valset=True
-               elif i==1 and j==2:
+               elif i==1 and j==2:  #Second row and Third column
                    val.append(-1)
                    col_ind.append(2)
+                   row_start_ind.append(5)
                    valset=True
                  
                if i==0 or i==1:
                    pass
-               elif i==n-1 and j==n-2 and not valset:
+               elif i==n-1 and j==n-2 and not valset: #Builds the row and columns for last row
                     #q=q+1
+                    
                     val.append(-1)
                     col_ind.append(j)
                     val.append(2)
                     col_ind.append(j+1)
-               elif not valset and not i==n-1:
+                    row_start_ind.append(rad+2)
+                    rad=rad+2
+               elif not valset and not i==n-1: #Builds the rows and columns
                     q=q+1
                     val.append(-1)
                     col_ind.append(q)
@@ -246,7 +254,10 @@ class SparseMatrix:
                     val.append(-1)
                     col_ind.append(q+2)
                     valset=True
+                    row_start_ind.append(rad+3)
+                    rad=rad+3
         return val, col_ind, row_start_ind
+        
 
     def print_internal_arrays(self):
         print(f"val: {self.val}")
