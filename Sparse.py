@@ -330,9 +330,10 @@ def task10():
     print("\n\n\n")
 
     #Multiply a sparse matrix with a vector
-
-
-
+    #
+    #
+    #
+    #
 
     #Test tolerance init-method, one matrix with a value above and one below
     matrixSmall4 = np.array([[1e-10, 0, 0],
@@ -378,16 +379,18 @@ def task10():
     print("\n\n\n")
     
     #multiply toeplitz
+    #
+    #
+    #
+    #
     
-    
-    
-
     #Change element and print the new dense matrix
     toeplitz10.change_element(2,6,88)
     toeplitz10.print_dense()
     print("\n\n\n")
-    
-#Task 11                 Provisoriskt testexempel
+
+
+#Task 11                
 def task11():
     
     def testAddElement(var,i,j,e):      
@@ -437,15 +440,57 @@ def task11():
     scipyResult = testSum(scipyTest1,scipyTest2)
 
     #Multiply matrix with vector
-               
-
+    #
+    #
+    #
+    #
+    
+    print(f"Insert element time\nSparseMatrix: {sparseElement}\nScipy: {scipyElement}\n\nSum of matrices time\nSparseMatrix: {sparseResult}\nScipy: {scipyResult}\n\nMultiplication with vector\n")
     
     #Matplotlib
-        
+    resultsSparseNew = []
+    resultsCsrScipyNew = []
+    resultsSparseSum = []
+    resultsCsrScipySum = []
+    xAxis = list(range(99))
     
+    for n in range(1,100):
+        toeplitzSparse = SparseMatrix.toeplitz(n)
+        
+        diagonal = [2 * np.ones(n), -1 * np.ones(n-1), -1 * np.ones(n-1)]
+        offsets = [0, -1, 1]
+        toeplitzCsrScipy = diags(diagonal, offsets, shape=(n, n), format='csr') #Creates a toeplitzmatrix with scipy
+        
+        #Add a new element
+        """timeSparseNew = testAddElement(toeplitzSparse,0 ,0 ,100)
+        resultsSparseNew.append(timeSparseNew)"""                    #change_element IndexError: list index out of range
+        timeCsrScipyNew = testAddElement(toeplitzCsrScipy,0 ,0 ,100)
+        resultsCsrScipyNew.append(timeCsrScipyNew)
+        
+        #Add two matrices
+        timeSparseSum = testSum(toeplitzSparse,toeplitzSparse)
+        resultsSparseSum.append(timeSparseSum)
+        timeCsrScipySum = testSum(toeplitzCsrScipy,toeplitzCsrScipy)
+        resultsCsrScipySum.append(timeCsrScipySum)
+        
+        #Multiply with vector
+        #
+        #
+        #
+        #
+
+    plt.plot(xAxis,resultsCsrScipyNew)  
+    """plt.plot(xAxis,resultsSparseNew)"""
+    plt.show()
+    
+    plt.plot(xAxis,resultsCsrScipySum)  
+    plt.plot(xAxis,resultsSparseSum)  
+    plt.show()
+            
+    #plot multiply
     
         
-    print(f"Insert element time\nSparseMatrix: {sparseElement}\nScipy: {scipyElement}\n\nSum of matrices time\nSparseMatrix: {sparseResult}\nScipy: {scipyResult}\n\nMultiplication with vector\n")
+   
         
    
 
