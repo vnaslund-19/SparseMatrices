@@ -389,6 +389,26 @@ def task10():
     
 #Task 11                 Provisoriskt testexempel
 def task11():
+    
+    def testAddElement(var,i,j,e):      
+        if isinstance(var,SparseMatrix) == True:
+            start = time.time()
+            var.change_element(i,j,e)
+            stop = time.time()
+        else:
+            start = time.time()
+            var[i,j] = e
+            stop = time.time()
+        return stop-start
+    
+    def testSum(var1,var2): 
+        start = time.time()
+        var1+var2
+        stop = time.time()
+        return stop-start
+    
+    
+    #Test with small matrices
     testMatrix1 = np.array([[20, 40, 0, 0, 5, 0, 0],
     [0, 60, 0, 80, 0, 0, 0],
     [0, 0, 100, 12, 140, 0, 88],
@@ -405,39 +425,29 @@ def task11():
     
     sparseTest1 = SparseMatrix(testMatrix1)
     sparseTest2 = SparseMatrix(testMatrix2)
-    
     scipyTest1 = csr_matrix(testMatrix1)
     scipyTest2 = csr_matrix(testMatrix2)
-    
+
     #Insert element
-    start = time.time()
-    sparseTest1.change_element(1, 6, 100)
-    stop = time.time()
-    sparseElement = stop-start
-
-    start = time.time()
-    scipyTest1[1,6] = 100
-    stop = time.time()
-    scipyElement = stop-start
-
-    #Sum of matrices
-    start = time.time()
-    sparseTest1+sparseTest2
-    stop = time.time()
-    sparseResult = stop-start
+    sparseElement = testAddElement(sparseTest1,1,6,100)
+    scipyElement = testAddElement(scipyTest1,1,6,100)
     
-    start = time.time()
-    scipyTest1+scipyTest2
-    stop = time.time()
-    scipyResult = stop-start
+    #Sum of matrices
+    sparseResult = testSum(sparseTest1,sparseTest2)
+    scipyResult = testSum(scipyTest1,scipyTest2)
 
     #Multiply matrix with vector
                
+
+    
+    #Matplotlib
         
+    
+    
         
+    print(f"Insert element time\nSparseMatrix: {sparseElement}\nScipy: {scipyElement}\n\nSum of matrices time\nSparseMatrix: {sparseResult}\nScipy: {scipyResult}\n\nMultiplication with vector\n")
         
-    print(f"Insert element times\nSparseMatrix: {sparseElement}\nScipy: {scipyElement}\n\nSum of matrices time\nSparseMatrix: {sparseResult}\nScipy: {scipyResult}")
-        
+   
 
 
 
