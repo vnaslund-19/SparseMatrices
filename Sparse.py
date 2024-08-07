@@ -184,6 +184,17 @@ class SparseMatrix:
 
         return result
 
+    def __mul__(self,vector):
+        if len(vector) != self.shape[1]:
+            raise ValueError("The length of the column is different from the vector")
+        result = np.zeros(self.shape[0])
+        for i in range(self.shape[0]):
+            row_start = self.start_ind[i] 
+            row_end = self.start_ind[i + 1]
+        for j in range(row_start,row_end):
+            result[i] += self.val[j] * vector[self.ind[j]]
+        return result
+
     def print_dense(self):
         n_rows, n_cols = self.shape
 
