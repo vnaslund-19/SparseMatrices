@@ -541,3 +541,13 @@ test2.change_representation()
 
 print(test2 + test1)
 
+vector = [1,2,3,4,5,6,7]
+
+test_mul = matrix1*vector
+
+print(test_mul)
+
+matrix3 = SparseMatrix(test_mul)
+print(matrix3)
+
+
