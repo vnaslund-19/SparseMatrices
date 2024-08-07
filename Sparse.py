@@ -184,25 +184,16 @@ class SparseMatrix:
 
         return result
 
-    def print_dense(self):
-        n_rows, n_cols = self.shape
-
-        # init with all zeros
-        dense_matrix = np.zeros((n_rows, n_cols))
-
-        if self.intern_represent == 'CSR':
-            for i in range(n_rows):
-                # Iterate over the range of indices for the current row
-                for j in range(self.start_ind[i], self.start_ind[i + 1]):
-                    col = self.ind[j] # Column index for the non-zero element
-                    dense_matrix[i, col] = self.val[j]
-        else:
-            for i in range(n_cols):
-                # Iterate over the range of indices for the current column
-                for j in range(self.start_ind[i], self.start_ind[i + 1]):
-                    row = self.ind[j] # Row index for the non-zero element
-                    dense_matrix[row, i] = self.val[j]
-        print(dense_matrix)
+    def __mul__(self,vector):
+        if len(vector) != self.shape[1]:
+            raise ValueError("The length of the column is different from the vector")
+        result = np.zeros(self.shape[0])
+        for i in range(self.shape[0]):
+            row_start = self.start_ind[i] 
+            row_end = self.start_ind[i + 1]
+        for j in range(row_start,row_end):
+            result[i] += self.val[j] * vector[self.ind[j]]
+        return result
 
     @classmethod
     def toeplitz(cls, n):
@@ -229,6 +220,26 @@ class SparseMatrix:
         result.tol = 1e-08
         result.normalize_indices()
         return result
+
+    def print_dense(self):
+        n_rows, n_cols = self.shape
+
+        # init with all zeros
+        dense_matrix = np.zeros((n_rows, n_cols))
+
+        if self.intern_represent == 'CSR':
+            for i in range(n_rows):
+                # Iterate over the range of indices for the current row
+                for j in range(self.start_ind[i], self.start_ind[i + 1]):
+                    col = self.ind[j] # Column index for the non-zero element
+                    dense_matrix[i, col] = self.val[j]
+        else:
+            for i in range(n_cols):
+                # Iterate over the range of indices for the current column
+                for j in range(self.start_ind[i], self.start_ind[i + 1]):
+                    row = self.ind[j] # Row index for the non-zero element
+                    dense_matrix[row, i] = self.val[j]
+        print(dense_matrix)
 
     def print_internal_arrays(self):
         print(f"val: {self.val}")
@@ -481,4 +492,15 @@ test2.change_representation()
 print(test2 + test1)
 
 
+
 test = SparseMatrix.toeplitz(10)
+
+vector = [1,2,3,4,5,6,7]
+
+test_mul = matrix1*vector
+
+print(test_mul)
+
+matrix3 = SparseMatrix(test_mul)
+print(matrix3)
+
