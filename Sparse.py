@@ -203,64 +203,32 @@ class SparseMatrix:
                     row = self.ind[j] # Row index for the non-zero element
                     dense_matrix[row, i] = self.val[j]
         print(dense_matrix)
-        
-    def toeplitz(self,n):
-        val = [] # list to store non-zero values
-        col_ind = [] # stores the column index of its corresponding non-zero value
-        row_start_ind = [] # stores the index of val/col_ind where each row starts & ends
-        q=0
-        rad=5
-        for i in range(n):     #for loop for the rows
-           valset=False
-           for j in range(n):   #for loop for the columns
-               if i==0 and j==0:   #First row and column
-                   val.append(2)
-                   col_ind.append(0)
-                   row_start_ind.append(0)
-                   valset=True
-               elif i==0 and j==1:    #First row second column
-                   val.append(-1)
-                   col_ind.append(1)
-                   row_start_ind.append(2)
-                   valset=True
-               elif i==1 and j==0:  #Second row and first column
-                   val.append(-1)
-                   col_ind.append(0)
-                   valset=True
-               elif i==1 and j==1:  #Second row and Second column
-                   val.append(2)
-                   col_ind.append(1)
-                   valset=True
-               elif i==1 and j==2:  #Second row and Third column
-                   val.append(-1)
-                   col_ind.append(2)
-                   row_start_ind.append(5)
-                   valset=True
-                 
-               if i==0 or i==1:
-                   pass
-               elif i==n-1 and j==n-2 and not valset: #Builds the row and columns for last row
-                    #q=q+1
-                    
-                    val.append(-1)
-                    col_ind.append(j)
-                    val.append(2)
-                    col_ind.append(j+1)
-                    row_start_ind.append(rad+2)
-                    rad=rad+2
-               elif not valset and not i==n-1: #Builds the rows and columns
-                    q=q+1
-                    val.append(-1)
-                    col_ind.append(q)
-                    val.append(2)
-                    col_ind.append(q+1)
-                    val.append(-1)
-                    col_ind.append(q+2)
-                    valset=True
-                    row_start_ind.append(rad+3)
-                    rad=rad+3
-        return val, col_ind, row_start_ind
-        
+
+    @classmethod
+    def toeplitz(cls, n):
+        # First row inserted.
+        val = [2, -1]  # list to store non-zero values,
+        ind = [0, 1]  # stores the column index of its corresponding non-zero value.
+        start_ind = [0, 2]  # stores the index of val/col_ind where each row starts & ends.
+        for i in range(n-2):
+            val.extend([-1, 2, -1])
+            ind.extend([i, i+1, i+2])
+            start_ind.append(start_ind[-1]+3)
+        val.extend([-1, 2]) # Last row inserted
+        ind.extend([n-2, n-1])
+        start_ind.append(3*n-2)
+
+        # Create the new SparseMatrix object.
+        result = SparseMatrix.__new__(SparseMatrix)
+        result.val = val
+        result.ind = ind
+        result.start_ind = start_ind
+        result.intern_represent = 'CSR'
+        result.shape = (n, n)
+        result.number_of_nonzero = len(val)
+        result.tol = 1e-08
+        result.normalize_indices()
+        return result
 
     def print_internal_arrays(self):
         print(f"val: {self.val}")
@@ -275,235 +243,217 @@ class SparseMatrix:
         return ""
 
 
-
-
-
-
-#Task 10
+# Task 10
 def task10():
-    #Test with small matrices
+    # Test with small matrices
     matrixSmall1 = np.array([[10, 20, 0, 0, 0, 0, 0],
-                        [0, 30, 0, 40, 0, 0, 0],
-                        [0, 0, 50, 60, 70, 0, 0],
-                        [0, 0, 0, 0, 0, 80, 0],
-                        [0, 0, 0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0, 0, 0]])
+                             [0, 30, 0, 40, 0, 0, 0],
+                             [0, 0, 50, 60, 70, 0, 0],
+                             [0, 0, 0, 0, 0, 80, 0],
+                             [0, 0, 0, 0, 0, 0, 0],
+                             [0, 0, 0, 0, 0, 0, 0]])
 
     matrixSmall2 = np.array([[10, 20, 0, 0, 0, 0, 0],
-                        [0, 30, 0, 40, 0, 0, 0],
-                        [0, 0, 50, 60, 70, 0, 0],
-                        [0, 0, 0, 0, 0, 80, 0],
-                        [0, 0, 0, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 0, 0, 0]])
+                             [0, 30, 0, 40, 0, 0, 0],
+                             [0, 0, 50, 60, 70, 0, 0],
+                             [0, 0, 0, 0, 0, 80, 0],
+                             [0, 0, 0, 0, 0, 0, 0],
+                             [0, 0, 0, 0, 0, 0, 0]])
 
     matrixSparce1 = SparseMatrix(matrixSmall1)
     matrixSparce2 = SparseMatrix(matrixSmall2)
 
-    #Prints dense matrix
+    # Prints dense matrix
     matrixSparce1.print_dense()
     print("\n\n\n")
 
-    #Prints internal arrays
+    # Prints internal arrays
     matrixSparce1.print_internal_arrays()
     print("\n\n\n")
 
-    #Test whether these two sparce matrices are the same
+    # Test whether these two sparce matrices are the same
     print(matrixSparce1 == matrixSparce2)
     print("\n\n\n")
 
-    #Change element and print the new dense matrix
-    matrixSparce1.change_element(2,6,88)
+    # Change element and print the new dense matrix
+    matrixSparce1.change_element(2, 6, 88)
     matrixSparce1.print_dense()
     print("\n\n\n")
 
-    #Test whether these two sparce matrices still are the same
+    # Test whether these two sparce matrices still are the same
     print(matrixSparce1 == matrixSparce2)
     print("\n\n\n")
 
-    #Test representation, change it and then test again
+    # Test representation, change it and then test again
     print(matrixSparce1.intern_represent)
     print("\n\n\n")
     matrixSparce1.change_representation()
     print(matrixSparce1.intern_represent)
     print("\n\n\n")
 
-    #Add two sparse matrices together
+    # Add two sparse matrices together
     matrixSum = matrixSparce1 + matrixSparce2
     matrixSum.print_dense()
     print("\n\n\n")
 
-    #Multiply a sparse matrix with a vector
+    # Multiply a sparse matrix with a vector
     #
     #
     #
     #
 
-    #Test tolerance init-method, one matrix with a value above and one below
+    # Test tolerance init-method, one matrix with a value above and one below
     matrixSmall4 = np.array([[1e-10, 0, 0],
                              [0, 1, 0],
                              [0, 0, 0]])
     matrixSparce4 = SparseMatrix(matrixSmall4)
     matrixSparce4.print_dense()
     print("\n\n\n")
-    matrixSparce4.change_element(0,0,1e-7) 
+    matrixSparce4.change_element(0, 0, 1e-7)
     matrixSparce4.print_dense()
     print("\n\n\n")
 
     ###########################
-    #Test with toeplitz matrixes    Obs, utgår ifrån att toeplitz(n) endast har argumentet n och att den returnerar en SparceMatrix
+    # Test with toeplitz matrixes    Obs, utgår ifrån att toeplitz(n) endast har argumentet n och att den returnerar en SparceMatrix
 
-    toeplitz10 = SparseMatrix.toeplitz(9)
-    toeplitz100 = SparseMatrix.toeplitz(99)
-    toeplitz10000 = SparseMatrix.toeplitz(9999)
-    
-    #Prints dense matrix
+    toeplitz10 = SparseMatrix.toeplitz(10)
+    toeplitz100 = SparseMatrix.toeplitz(100)
+    toeplitz10000 = SparseMatrix.toeplitz(1000)
+
+    # Prints dense matrix
     toeplitz10.print_dense()
     print("\n\n\n")
-    toeplitz100.print_dense()  
+    toeplitz100.print_dense()
     print("\n\n\n")
-    toeplitz10000.print_dense()  
-    print("\n\n\n")
-    
-    #Prints internal arrays
-    toeplitz10.print_internal_arrays() 
-    print("\n\n\n")
-    toeplitz100.print_internal_arrays() 
-    print("\n\n\n")
-    #toeplitz10000.print_internal_arrays() #Enorm utskrift, hur annars testa dom stora?
+    toeplitz10000.print_dense()
     print("\n\n\n")
 
-    #Test whether these two sparce matrices are the same
+    # Prints internal arrays
+    toeplitz10.print_internal_arrays()
+    print("\n\n\n")
+    toeplitz100.print_internal_arrays()
+    print("\n\n\n")
+    # toeplitz10000.print_internal_arrays() #Enorm utskrift, hur annars testa dom stora?
+    print("\n\n\n")
+
+    # Test whether these two sparce matrices are the same
     print(toeplitz10000 == toeplitz100)
     print("\n\n\n")
 
-    #add toeplitz
+    # add toeplitz
     toeplitzSum = toeplitz10 + toeplitz10
     toeplitzSum.print_dense()
     print("\n\n\n")
-    
-    #multiply toeplitz
+
+    # multiply toeplitz
     #
     #
     #
     #
-    
-    #Change element and print the new dense matrix
-    toeplitz10.change_element(2,6,88)
+
+    # Change element and print the new dense matrix
+    toeplitz10.change_element(2, 6, 88)
     toeplitz10.print_dense()
     print("\n\n\n")
 
 
-#Task 11                
+# Task 11
 def task11():
-    
-    def testAddElement(var,i,j,e):      
-        if isinstance(var,SparseMatrix) == True:
+    def testAddElement(var, i, j, e):
+        if isinstance(var, SparseMatrix) == True:
             start = time.time()
-            var.change_element(i,j,e)
+            var.change_element(i, j, e)
             stop = time.time()
         else:
             start = time.time()
-            var[i,j] = e
+            var[i, j] = e
             stop = time.time()
-        return stop-start
-    
-    def testSum(var1,var2): 
+        return stop - start
+
+    def testSum(var1, var2):
         start = time.time()
-        var1+var2
+        var1 + var2
         stop = time.time()
-        return stop-start
-    
-    
-    #Test with small matrices
+        return stop - start
+
+    # Test with small matrices
     testMatrix1 = np.array([[20, 40, 0, 0, 5, 0, 0],
-    [0, 60, 0, 80, 0, 0, 0],
-    [0, 0, 100, 12, 140, 0, 88],
-    [0, 234, 0, 0, 0, 16, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [7, 0, 0, 3, 0, 0, 0]])
-    
+                            [0, 60, 0, 80, 0, 0, 0],
+                            [0, 0, 100, 12, 140, 0, 88],
+                            [0, 234, 0, 0, 0, 16, 0],
+                            [0, 0, 0, 0, 0, 0, 0],
+                            [7, 0, 0, 3, 0, 0, 0]])
+
     testMatrix2 = np.array([[2, 5, 2, 0, 77, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 14, 0, 11],
-    [0, 234, 0, 0, 0, 6, 0],
-    [0, 0, 0, 0, 5, 0, 0],
-    [2, 0, 0, 378, 0, 3, 0]])
-    
+                            [0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 14, 0, 11],
+                            [0, 234, 0, 0, 0, 6, 0],
+                            [0, 0, 0, 0, 5, 0, 0],
+                            [2, 0, 0, 378, 0, 3, 0]])
+
     sparseTest1 = SparseMatrix(testMatrix1)
     sparseTest2 = SparseMatrix(testMatrix2)
     scipyTest1 = csr_matrix(testMatrix1)
     scipyTest2 = csr_matrix(testMatrix2)
 
-    #Insert element
-    sparseElement = testAddElement(sparseTest1,1,6,100)
-    scipyElement = testAddElement(scipyTest1,1,6,100)
-    
-    #Sum of matrices
-    sparseResult = testSum(sparseTest1,sparseTest2)
-    scipyResult = testSum(scipyTest1,scipyTest2)
+    # Insert element
+    sparseElement = testAddElement(sparseTest1, 1, 6, 100)
+    scipyElement = testAddElement(scipyTest1, 1, 6, 100)
 
-    #Multiply matrix with vector
+    # Sum of matrices
+    sparseResult = testSum(sparseTest1, sparseTest2)
+    scipyResult = testSum(scipyTest1, scipyTest2)
+
+    # Multiply matrix with vector
     #
     #
     #
     #
-    
-    print(f"Insert element time\nSparseMatrix: {sparseElement}\nScipy: {scipyElement}\n\nSum of matrices time\nSparseMatrix: {sparseResult}\nScipy: {scipyResult}\n\nMultiplication with vector\n")
-    
-    #Matplotlib
+
+    print(
+        f"Insert element time\nSparseMatrix: {sparseElement}\nScipy: {scipyElement}\n\nSum of matrices time\nSparseMatrix: {sparseResult}\nScipy: {scipyResult}\n\nMultiplication with vector\n")
+
+    # Matplotlib
     resultsSparseNew = []
     resultsCsrScipyNew = []
     resultsSparseSum = []
     resultsCsrScipySum = []
     xAxis = list(range(99))
-    
-    for n in range(1,100):
+
+    for n in range(1, 100):
         toeplitzSparse = SparseMatrix.toeplitz(n)
-        
-        diagonal = [2 * np.ones(n), -1 * np.ones(n-1), -1 * np.ones(n-1)]
+
+        diagonal = [2 * np.ones(n), -1 * np.ones(n - 1), -1 * np.ones(n - 1)]
         offsets = [0, -1, 1]
-        toeplitzCsrScipy = diags(diagonal, offsets, shape=(n, n), format='csr') #Creates a toeplitzmatrix with scipy
-        
-        #Add a new element
+        toeplitzCsrScipy = diags(diagonal, offsets, shape=(n, n), format='csr')  # Creates a toeplitzmatrix with scipy
+
+        # Add a new element
         """timeSparseNew = testAddElement(toeplitzSparse,0 ,0 ,100)
-        resultsSparseNew.append(timeSparseNew)"""                    #change_element IndexError: list index out of range
-        timeCsrScipyNew = testAddElement(toeplitzCsrScipy,0 ,0 ,100)
+        resultsSparseNew.append(timeSparseNew)"""  # change_element IndexError: list index out of range
+        timeCsrScipyNew = testAddElement(toeplitzCsrScipy, 0, 0, 100)
         resultsCsrScipyNew.append(timeCsrScipyNew)
-        
-        #Add two matrices
-        timeSparseSum = testSum(toeplitzSparse,toeplitzSparse)
+
+        # Add two matrices
+        timeSparseSum = testSum(toeplitzSparse, toeplitzSparse)
         resultsSparseSum.append(timeSparseSum)
-        timeCsrScipySum = testSum(toeplitzCsrScipy,toeplitzCsrScipy)
+        timeCsrScipySum = testSum(toeplitzCsrScipy, toeplitzCsrScipy)
         resultsCsrScipySum.append(timeCsrScipySum)
-        
-        #Multiply with vector
+
+        # Multiply with vector
         #
         #
         #
         #
 
-    plt.plot(xAxis,resultsCsrScipyNew)  
+    plt.plot(xAxis, resultsCsrScipyNew)
     """plt.plot(xAxis,resultsSparseNew)"""
     plt.show()
-    
-    plt.plot(xAxis,resultsCsrScipySum)  
-    plt.plot(xAxis,resultsSparseSum)  
+
+    plt.plot(xAxis, resultsCsrScipySum)
+    plt.plot(xAxis, resultsSparseSum)
     plt.show()
-            
-    #plot multiply
-    
-        
-   
-        
-   
 
-
-
-
-
-
-
-
+    # plot multiply
 
 
 ################################
@@ -530,3 +480,5 @@ test2.change_representation()
 
 print(test2 + test1)
 
+
+test = SparseMatrix.toeplitz(10)
