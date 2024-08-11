@@ -184,14 +184,14 @@ class SparseMatrix:
 
         return result
 
-    def __mul__(self,vector):
+    def __mul__(self, vector):
         if len(vector) != self.shape[1]:
             raise ValueError("The length of the column is different from the vector")
         result = np.zeros(self.shape[0])
         for i in range(self.shape[0]):
             row_start = self.start_ind[i] 
             row_end = self.start_ind[i + 1]
-        for j in range(row_start,row_end):
+            for j in range(row_start,row_end):
             result[i] += self.val[j] * vector[self.ind[j]]
         return result
 
@@ -493,11 +493,9 @@ print(test2 + test1)
 
 
 
-test = SparseMatrix.toeplitz(10)
-
-vector = [1,2,3,4,5,6,7]
-
-test_mul = matrix1*vector
+test = SparseMatrix.toeplitz(5)
+vector = [1,2,1,1,1]
+test_mul = test*vector
 
 print(test_mul)
 
