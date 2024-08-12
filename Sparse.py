@@ -183,6 +183,7 @@ class SparseMatrix:
             other.change_representation()
 
         return result
+#Task 8
 
     def __mul__(self, vector):
         if len(vector) != self.shape[1]:
@@ -334,7 +335,7 @@ def task10():
 
     toeplitz10 = SparseMatrix.toeplitz(10)
     toeplitz100 = SparseMatrix.toeplitz(100)
-    toeplitz10000 = SparseMatrix.toeplitz(1000)
+    toeplitz1000 = SparseMatrix.toeplitz(1000)
 
     
     # Prints dense matrix
