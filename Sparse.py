@@ -254,6 +254,7 @@ class SparseMatrix:
         return ""
 
 
+
 # Task 10
 def task10():
     # Test with small matrices
@@ -270,67 +271,72 @@ def task10():
                              [0, 0, 0, 0, 0, 80, 0],
                              [0, 0, 0, 0, 0, 0, 0],
                              [0, 0, 0, 0, 0, 0, 0]])
+    
+    vector = [1,2,3,4,5,6,7]
 
-    matrixSparce1 = SparseMatrix(matrixSmall1)
-    matrixSparce2 = SparseMatrix(matrixSmall2)
+    matrixSparse1 = SparseMatrix(matrixSmall1)
+    matrixSparse2 = SparseMatrix(matrixSmall2)
 
     # Prints dense matrix
-    matrixSparce1.print_dense()
+    matrixSparse1.print_dense()
     print("\n\n\n")
 
     # Prints internal arrays
-    matrixSparce1.print_internal_arrays()
+    matrixSparse1.print_internal_arrays()
     print("\n\n\n")
 
     # Test whether these two sparce matrices are the same
-    print(matrixSparce1 == matrixSparce2)
+    print(matrixSparse1 == matrixSparse2)
     print("\n\n\n")
 
     # Change element and print the new dense matrix
-    matrixSparce1.change_element(2, 6, 88)
-    matrixSparce1.print_dense()
+    matrixSparse1.change_element(2, 6, 88)
+    matrixSparse1.print_dense()
     print("\n\n\n")
 
     # Test whether these two sparce matrices still are the same
-    print(matrixSparce1 == matrixSparce2)
+    print(matrixSparse1 == matrixSparse2)
     print("\n\n\n")
 
     # Test representation, change it and then test again
-    print(matrixSparce1.intern_represent)
+    print(matrixSparse1.intern_represent)
     print("\n\n\n")
-    matrixSparce1.change_representation()
-    print(matrixSparce1.intern_represent)
+    matrixSparse1.change_representation()
+    print(matrixSparse1.intern_represent)
     print("\n\n\n")
 
     # Add two sparse matrices together
-    matrixSum = matrixSparce1 + matrixSparce2
+    matrixSum = matrixSparse1 + matrixSparse2
     matrixSum.print_dense()
     print("\n\n\n")
 
     # Multiply a sparse matrix with a vector
-    #
-    #
-    #
-    #
+    product = matrixSparse2 * vector
+    print(product)
+    print("\n\n\n")
 
     # Test tolerance init-method, one matrix with a value above and one below
     matrixSmall4 = np.array([[1e-10, 0, 0],
                              [0, 1, 0],
                              [0, 0, 0]])
-    matrixSparce4 = SparseMatrix(matrixSmall4)
-    matrixSparce4.print_dense()
+    matrixSparse4 = SparseMatrix(matrixSmall4)
+    matrixSparse4.print_dense()
     print("\n\n\n")
-    matrixSparce4.change_element(0, 0, 1e-7)
-    matrixSparce4.print_dense()
+    matrixSparse4.change_element(0, 0, 1e-7)
+    matrixSparse4.print_dense()
     print("\n\n\n")
 
+
+
     ###########################
-    # Test with toeplitz matrixes    Obs, utgår ifrån att toeplitz(n) endast har argumentet n och att den returnerar en SparceMatrix
+    
+    # Test with toeplitz matrixes    
 
     toeplitz10 = SparseMatrix.toeplitz(10)
     toeplitz100 = SparseMatrix.toeplitz(100)
     toeplitz10000 = SparseMatrix.toeplitz(1000)
 
+    
     # Prints dense matrix
     toeplitz10.print_dense()
     print("\n\n\n")
@@ -342,25 +348,24 @@ def task10():
     # Prints internal arrays
     toeplitz10.print_internal_arrays()
     print("\n\n\n")
-    toeplitz100.print_internal_arrays()
-    print("\n\n\n")
-    # toeplitz10000.print_internal_arrays() #Enorm utskrift, hur annars testa dom stora?
-    print("\n\n\n")
+    #toeplitz100.print_internal_arrays()
+    #print("\n\n\n")
+    # toeplitz10000.print_internal_arrays() 
+    #print("\n\n\n")
 
     # Test whether these two sparce matrices are the same
     print(toeplitz10000 == toeplitz100)
     print("\n\n\n")
-
+    
     # add toeplitz
     toeplitzSum = toeplitz10 + toeplitz10
     toeplitzSum.print_dense()
-    print("\n\n\n")
+
 
     # multiply toeplitz
-    #
-    #
-    #
-    #
+    toeplitzProduct10 = toeplitz10 * np.random.randint(0,10,10)
+    toeplitzProduct100 = toeplitz100 * np.random.randint(0,10,100)
+    print(f"\n\n\n{toeplitzProduct10}\n\n\n{toeplitzProduct100}\n\n\n")
 
     # Change element and print the new dense matrix
     toeplitz10.change_element(2, 6, 88)
@@ -386,6 +391,12 @@ def task11():
         var1 + var2
         stop = time.time()
         return stop - start
+    
+    def testMul(var,vector):      
+        start = time.time()
+        var * vector
+        stop = time.time()
+        return stop-start
 
     # Test with small matrices
     testMatrix1 = np.array([[20, 40, 0, 0, 5, 0, 0],
@@ -401,6 +412,8 @@ def task11():
                             [0, 234, 0, 0, 0, 6, 0],
                             [0, 0, 0, 0, 5, 0, 0],
                             [2, 0, 0, 378, 0, 3, 0]])
+    
+    testVector = [1,2,3,4,5,6]
 
     sparseTest1 = SparseMatrix(testMatrix1)
     sparseTest2 = SparseMatrix(testMatrix2)
@@ -408,63 +421,68 @@ def task11():
     scipyTest2 = csr_matrix(testMatrix2)
 
     # Insert element
-    sparseElement = testAddElement(sparseTest1, 1, 6, 100)
-    scipyElement = testAddElement(scipyTest1, 1, 6, 100)
+    sparseElement = testAddElement(sparseTest1, 1, 5, 100)
+    scipyElement = testAddElement(scipyTest1, 1, 5, 100)
 
     # Sum of matrices
-    sparseResult = testSum(sparseTest1, sparseTest2)
-    scipyResult = testSum(scipyTest1, scipyTest2)
+    sparseSum = testSum(sparseTest1, sparseTest2)
+    scipySum = testSum(scipyTest1, scipyTest2)
 
     # Multiply matrix with vector
-    #
-    #
-    #
-    #
+    sparseMul = testMul(sparseTest1, testVector)
+    scipyMul = testMul(scipyTest1, testVector)
 
-    print(
-        f"Insert element time\nSparseMatrix: {sparseElement}\nScipy: {scipyElement}\n\nSum of matrices time\nSparseMatrix: {sparseResult}\nScipy: {scipyResult}\n\nMultiplication with vector\n")
+    print(f"Insert element time\nSparseMatrix: {sparseElement}\nScipy: {scipyElement}\n\nSum of matrices time\nSparseMatrix: {sparseSum}\nScipy: {scipySum}\n\nMultiplication with vector\nSparseMatrix: {sparseMul}\nScipy: {scipyMul}")
+
 
     # Matplotlib
     resultsSparseNew = []
-    resultsCsrScipyNew = []
+    resultsScipyNew = []
     resultsSparseSum = []
-    resultsCsrScipySum = []
-    xAxis = list(range(99))
+    resultsScipySum = []
+    resultsSparseMul = []
+    resultsScipyMul = []
+    xAxis = list(range(98))
 
-    for n in range(1, 100):
-        toeplitzSparse = SparseMatrix.toeplitz(n)
-
+    for n in range(2, 100):
+        toeplitzSparse = SparseMatrix.toeplitz(n) # Creates a toeplitzmatrix with SparseMatrix
+        
         diagonal = [2 * np.ones(n), -1 * np.ones(n - 1), -1 * np.ones(n - 1)]
         offsets = [0, -1, 1]
-        toeplitzCsrScipy = diags(diagonal, offsets, shape=(n, n), format='csr')  # Creates a toeplitzmatrix with scipy
+        toeplitzScipy = diags(diagonal, offsets, shape=(n, n), format='csr')  # Creates a toeplitzmatrix with scipy
+        
+        vector = np.random.randint(0,100,n) # Creates a vector of length n
 
         # Add a new element
-        """timeSparseNew = testAddElement(toeplitzSparse,0 ,0 ,100)
-        resultsSparseNew.append(timeSparseNew)"""  # change_element IndexError: list index out of range
-        timeCsrScipyNew = testAddElement(toeplitzCsrScipy, 0, 0, 100)
-        resultsCsrScipyNew.append(timeCsrScipyNew)
+        timeSparseNew = testAddElement(toeplitzSparse,0,0,100)
+        resultsSparseNew.append(timeSparseNew)
+        timeScipyNew = testAddElement(toeplitzScipy,0,0,100)
+        resultsScipyNew.append(timeScipyNew)
 
         # Add two matrices
         timeSparseSum = testSum(toeplitzSparse, toeplitzSparse)
         resultsSparseSum.append(timeSparseSum)
-        timeCsrScipySum = testSum(toeplitzCsrScipy, toeplitzCsrScipy)
-        resultsCsrScipySum.append(timeCsrScipySum)
+        timeScipySum = testSum(toeplitzScipy, toeplitzScipy)
+        resultsScipySum.append(timeScipySum)
 
         # Multiply with vector
-        #
-        #
-        #
-        #
+        timeSparseMul = testMul(toeplitzSparse, vector)
+        resultsSparseMul.append(timeSparseMul)
+        timeScipyMul = testMul(toeplitzScipy, vector)
+        resultsScipyMul.append(timeScipyMul)
 
-    plt.plot(xAxis, resultsCsrScipyNew)
-    """plt.plot(xAxis,resultsSparseNew)"""
+
+    plt.plot(xAxis, resultsScipyNew)
+    plt.plot(xAxis,resultsSparseNew)
     plt.show()
 
-    plt.plot(xAxis, resultsCsrScipySum)
+    plt.plot(xAxis, resultsScipySum)
     plt.plot(xAxis, resultsSparseSum)
     plt.show()
-
-    # plot multiply
+    
+    plt.plot(xAxis, resultsScipyMul)
+    plt.plot(xAxis, resultsSparseMul)
+    plt.show()
 
 
 ################################
