@@ -192,7 +192,7 @@ class SparseMatrix:
             row_start = self.start_ind[i] 
             row_end = self.start_ind[i + 1]
             for j in range(row_start,row_end):
-            result[i] += self.val[j] * vector[self.ind[j]]
+               result[i] += self.val[j] * vector[self.ind[j]]
         return result
 
     @classmethod
