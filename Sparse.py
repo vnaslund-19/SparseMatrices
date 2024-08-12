@@ -335,7 +335,7 @@ def task10():
 
     toeplitz10 = SparseMatrix.toeplitz(10)
     toeplitz100 = SparseMatrix.toeplitz(100)
-    toeplitz1000 = SparseMatrix.toeplitz(1000)
+    toeplitz10000 = SparseMatrix.toeplitz(10000)
 
     
     # Prints dense matrix
@@ -355,7 +355,7 @@ def task10():
     #print("\n\n\n")
 
     # Test whether these two sparce matrices are the same
-    print(toeplitz10000 == toeplitz100)
+    print(toeplitz10000 == toeplitz10000)
     print("\n\n\n")
     
     # add toeplitz
