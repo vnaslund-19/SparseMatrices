@@ -491,29 +491,45 @@ def task11():
 # test area.
 
 # Test change elements.
-matrix1 = np.array([[10, 20, 0, 0, 0, 0, 0],
-                    [0, 30, 0, 40, 0, 0, 0],
-                    [0, 0, 50, 60, 70, 0, 0],
-                    [0, 0, 0, 0, 0, 80, 0],
-                    [0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0]])
+matrix1 = np.array([[10, 20, 0, 0],
+                    [0, 30, 0, 40],
+                    [0, 0, 50, 60],
+                    [0, 0, 0, 0,],
+                    [0, 0, 0, 0,],
+                    [0, 0, 0, 0,]])
 
 test1 = SparseMatrix(matrix1)
 
-test2 = SparseMatrix(matrix1)
+print("TASK 3 TESTING\n")
 
-test2.change_element(1, 1, 10)
+print("Before changing")
+test1.print_internal_arrays()
+test1.change_element(0, 1, 50)
+test1.change_element(5, 3, 100)
 
-print(test1.intern_represent)
+print("\nAfter changing elements")
+test1.print_internal_arrays()
 
-test2.change_representation()
+print("\nTASK 4 TESTING")
+print("After changing representation to CSC")
+test1.change_representation()
+test1.print_internal_arrays()
 
-print(test2 + test1)
+matrix2 = np.array([[0, -49.9, 0, 0],
+                    [0, -29, 0, 0],
+                    [1, 0, -40, 0],
+                    [2, 0, 0, 0,],
+                    [0, 0, 0, 0,],
+                    [0, 0, 0, 0,]])
+test2 = SparseMatrix(matrix2)
+print("\nTASK 7 TESTING")
+print("Added matrices:")
+added_matrix = test1 + test2
+added_matrix.print_dense()
 
-
-
-test = SparseMatrix.toeplitz(5)
+test2 = SparseMatrix.toeplitz(5)
 vector = [1,2,1,1,1]
-test_mul = test*vector
+test_mul = test2*vector
 
+print()
 print(test_mul)
