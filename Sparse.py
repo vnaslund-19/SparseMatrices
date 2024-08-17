@@ -34,24 +34,24 @@ class SparseMatrix:
         if i+1 > self.shape[0] or j+1 > self.shape[1]:
             raise IndexError("Trying to insert value outside of the matrix dimension.")
         if self.intern_represent == 'CSR':
-            # CSR: i is row index, j is column index
-            start_i = self.start_ind[i]  # start of row i
-            end_i = self.start_ind[i + 1]  # end of row i
-            indices = self.ind[start_i:end_i]
+            # CSR: start/end i is row index, target_index is column index
+            start_i = self.start_ind[i]  # start of row i in val and ind
+            end_i = self.start_ind[i + 1]  # end of row i in val and ind
+            indices = self.ind[start_i:end_i] # extract the relevant column indices for row i
             target_index = j  # column index in CSR
         else:
-            # CSC: i is column index, j is row index
-            start_i = self.start_ind[j]  # start of column j
-            end_i = self.start_ind[j + 1]  # end of column j
-            indices = self.ind[start_i:end_i]
+            # CSC: start/end i is column index, target_index is row index
+            start_i = self.start_ind[j]  # start of column j in val and ind
+            end_i = self.start_ind[j + 1]  # end of column j in val and ind
+            indices = self.ind[start_i:end_i] # extract the relevant row indices for column j
             target_index = i  # row index in CSC
 
         if target_index in indices:
-            index = indices.index(target_index)
-            if a_ij == 0:
+            index = indices.index(target_index) # The position in the relevant row (CSC) or columc (CSR)
+            if a_ij < abs(self.tol):
                 # Remove the element
-                self.val.pop(start_i + index)
-                self.ind.pop(start_i + index)
+                self.val.pop(start_i + index) # start_i + the position in the relevant row/column 
+                self.ind.pop(start_i + index) # is the absolute position in the val & ind arrays
                 self.number_of_nonzero -= 1
                 # Update start_ind for subsequent rows/columns
                 self.start_ind[(i + 1):] = [x - 1 for x in self.start_ind[(i + 1):]]
@@ -59,7 +59,7 @@ class SparseMatrix:
                 # Update the value
                 self.val[start_i + index] = a_ij
         else:
-            if a_ij != 0:
+            if a_ij > abs(self.tol):
                 # Insert the new element
                 insert_position = start_i + np.searchsorted(indices, target_index)
                 self.val.insert(insert_position, a_ij)
@@ -143,7 +143,7 @@ class SparseMatrix:
                         row_dict[col] = other.val[j]
                 # Append the combined row to the val and ind lists
                 for col in sorted(row_dict.keys()):
-                    if abs(row_dict[col]) > self.tol:  # if added values are close to 0 make them 0
+                    if abs(row_dict[col]) > self.tol: # if added values are close to 0 make them 0
                         val.append(row_dict[col])
                         ind.append(col)
                 start_ind.append(len(val))
@@ -183,8 +183,8 @@ class SparseMatrix:
             other.change_representation()
 
         return result
-#Task 8
 
+    # Task 8
     def __mul__(self, vector):
         if len(vector) != self.shape[1]:
             raise ValueError("The length of the column is different from the vector")
@@ -218,7 +218,7 @@ class SparseMatrix:
         result.intern_represent = 'CSR'
         result.shape = (n, n)
         result.number_of_nonzero = len(val)
-        result.tol = 1e-08
+        result.tol = 1e-08 # redundant
         result.normalize_indices()
         return result
 
@@ -496,7 +496,7 @@ matrix1 = np.array([[10, 20, 0, 0, 0, 0, 0],
                     [0, 0, 50, 60, 70, 0, 0],
                     [0, 0, 0, 0, 0, 80, 0],
                     [0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0]]
+                    [0, 0, 0, 0, 0, 0, 0]])
 
 test1 = SparseMatrix(matrix1)
 
@@ -517,7 +517,3 @@ vector = [1,2,1,1,1]
 test_mul = test*vector
 
 print(test_mul)
-
-matrix3 = SparseMatrix(test_mul)
-print(matrix3)
-
