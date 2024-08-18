@@ -286,7 +286,7 @@ def task10():
     print(matrixSparse1 == matrixSparse2)
 
     # Change element and print the new dense matrix
-    print("\n\n\nChange element and print the new dense matrix\n")
+    print("\n\n\nChange element and print the new dense matrix (adding an 88)\n")
     matrixSparse1.change_element(2, 6, 88)
     matrixSparse1.print_dense()
 
@@ -489,4 +489,4 @@ def task11():
     plt.show()
 
 
-
+task10()
