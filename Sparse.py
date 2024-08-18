@@ -186,7 +186,7 @@ class SparseMatrix:
 
     # Task 8
     def __mul__(self, vector):
-        if len(vector) != self.shape[1]:
+        if self.shape[1] != len(vector):
             raise ValueError("The length of the column is different from the vector")
         result = np.zeros(self.shape[0])
         for i in range(self.shape[0]):
@@ -222,7 +222,19 @@ class SparseMatrix:
         result.normalize_indices()
         return result
 
-    def print_dense(self):
+    def print_dense(self, matrix, tol=1e-8, n_rows=None, n_cols=None):
+        self.val, self.ind, self.start_ind = self.convert_matrix_to_csr(matrix, tol)
+        self.normalize_indices()
+        self.intern_represent = 'CSR'
+        self.number_of_nonzero = len(self.val)
+        self.tol = tol
+        if isinstance(matrix, list):
+            self.n_rows = len(self.val)
+            self.n_cols = 0 if n_cols is None else n_cols
+        else:
+            self.n_rows = n_rows
+            self.n_cols = n_cols
+
         n_rows, n_cols = self.shape
 
         # init with all zeros
@@ -475,14 +487,17 @@ def task11():
 
     plt.plot(xAxis, resultsScipyNew)
     plt.plot(xAxis,resultsSparseNew)
+    plt.legend(["ScipyNew","SparseNew"])
     plt.show()
 
     plt.plot(xAxis, resultsScipySum)
     plt.plot(xAxis, resultsSparseSum)
+    plt.legend(["ScipySum","SparseSum"])
     plt.show()
-    
+
     plt.plot(xAxis, resultsScipyMul)
     plt.plot(xAxis, resultsSparseMul)
+    plt.legend(["ScipyMul","SparseMul"])
     plt.show()
 
 
