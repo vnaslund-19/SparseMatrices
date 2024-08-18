@@ -412,19 +412,19 @@ def task11():
         return stop-start
 
     # Test with small matrices
-    testMatrix1 = np.array([[20, 40, 0, 0, 5, 0, 0],
-                            [0, 60, 0, 80, 0, 0, 0],
-                            [0, 0, 100, 12, 140, 0, 88],
-                            [0, 234, 0, 0, 0, 16, 0],
-                            [0, 0, 0, 0, 0, 0, 0],
-                            [7, 0, 0, 3, 0, 0, 0]])
+    testMatrix1 = np.array([[20, 40, 0, 0, 5, 0],
+                            [0, 60, 0, 80, 0, 0],
+                            [0, 0, 100, 12, 140, 0],
+                            [0, 234, 0, 0, 0, 16],
+                            [0, 0, 0, 0, 0, 0],
+                            [7, 0, 0, 3, 0, 0]])
 
-    testMatrix2 = np.array([[2, 5, 2, 0, 77, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 14, 0, 11],
-                            [0, 234, 0, 0, 0, 6, 0],
-                            [0, 0, 0, 0, 5, 0, 0],
-                            [2, 0, 0, 378, 0, 3, 0]])
+    testMatrix2 = np.array([[2, 5, 2, 0, 77, 0],
+                            [0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 14, 0],
+                            [0, 234, 0, 0, 0, 6],
+                            [0, 0, 0, 0, 5, 0],
+                            [2, 0, 0, 378, 0, 3]])
     
     testVector = [1,2,3,4,5,6]
 
@@ -488,17 +488,24 @@ def task11():
     plt.plot(xAxis, resultsScipyNew)
     plt.plot(xAxis,resultsSparseNew)
     plt.legend(["ScipyNew","SparseNew"])
+    plt.xlabel("Matrix size")
+    plt.ylabel("Time")
     plt.show()
 
     plt.plot(xAxis, resultsScipySum)
     plt.plot(xAxis, resultsSparseSum)
     plt.legend(["ScipySum","SparseSum"])
+    plt.xlabel("Matrix size")
+    plt.ylabel("Time")
     plt.show()
 
     plt.plot(xAxis, resultsScipyMul)
     plt.plot(xAxis, resultsSparseMul)
     plt.legend(["ScipyMul","SparseMul"])
+    plt.xlabel("Matrix size")
+    plt.ylabel("Time")
     plt.show()
+
 
 
 ################################
