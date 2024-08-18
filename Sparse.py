@@ -246,13 +246,6 @@ class SparseMatrix:
         print(f"val: {self.val}")
         print(f"ind: {self.ind}")
         print(f"start_ind: {self.start_ind}")
-    
-    def __str__(self):
-        # bad implementation
-        print(self.intern_represent)
-        self.print_internal_arrays()
-        self.print_dense()
-        return ""
 
 
 
@@ -279,54 +272,57 @@ def task10():
     matrixSparse2 = SparseMatrix(matrixSmall2)
 
     # Prints dense matrix
+    print("Print the two small matrices in dense format\n")
     matrixSparse1.print_dense()
-    print("\n\n\n")
+    print("\n")
+    matrixSparse2.print_dense()
 
     # Prints internal arrays
+    print("\n\n\nPrints internal arrays\n")
     matrixSparse1.print_internal_arrays()
-    print("\n\n\n")
 
     # Test whether these two sparce matrices are the same
+    print("\n\n\nTest whether these two sparce matrices are the same\n")
     print(matrixSparse1 == matrixSparse2)
-    print("\n\n\n")
 
     # Change element and print the new dense matrix
+    print("\n\n\nChange element and print the new dense matrix\n")
     matrixSparse1.change_element(2, 6, 88)
     matrixSparse1.print_dense()
-    print("\n\n\n")
 
     # Test whether these two sparce matrices still are the same
+    print("\n\n\nTest whether these two sparce matrices still are the same\n")
     print(matrixSparse1 == matrixSparse2)
-    print("\n\n\n")
 
     # Test representation, change it and then test again
+    print("\n\n\nTest representation, change it and then test again\n")
     print(matrixSparse1.intern_represent)
-    print("\n\n\n")
+    matrixSparse1.print_internal_arrays()
+    print("\n\n\nNew representation\n")
     matrixSparse1.change_representation()
     print(matrixSparse1.intern_represent)
-    print("\n\n\n")
+    matrixSparse1.print_internal_arrays()
 
     # Add two sparse matrices together
+    print("\n\n\nAdd two sparse matrices together\n")
     matrixSum = matrixSparse1 + matrixSparse2
     matrixSum.print_dense()
-    print("\n\n\n")
 
     # Multiply a sparse matrix with a vector
+    print("\n\n\nMultiply a sparse matrix with a vector\n")
     product = matrixSparse2 * vector
     print(product)
-    print("\n\n\n")
 
     # Test tolerance init-method, one matrix with a value above and one below
+    print("\n\n\nTest tolerance init-method, one matrix with a value above and one below\n")
     matrixSmall4 = np.array([[1e-10, 0, 0],
                              [0, 1, 0],
                              [0, 0, 0]])
     matrixSparse4 = SparseMatrix(matrixSmall4)
     matrixSparse4.print_dense()
-    print("\n\n\n")
+    print("\n")
     matrixSparse4.change_element(0, 0, 1e-7)
     matrixSparse4.print_dense()
-    print("\n\n\n")
-
 
 
     ###########################
@@ -339,36 +335,34 @@ def task10():
 
     
     # Prints dense matrix
+    print("\n\n\nPrints the sparse toeplitz in dense format\n\ntoeplitz10:")
     toeplitz10.print_dense()
-    print("\n\n\n")
+    print("\n\ntoeplitz100:")
     toeplitz100.print_dense()
-    print("\n\n\n")
-    toeplitz10000.print_dense()
-    print("\n\n\n")
 
     # Prints internal arrays
+    print("\n\n\nPrints internal arrays\n")
     toeplitz10.print_internal_arrays()
-    print("\n\n\n")
-    #toeplitz100.print_internal_arrays()
-    #print("\n\n\n")
-    # toeplitz10000.print_internal_arrays() 
-    #print("\n\n\n")
 
     # Test whether these two sparce matrices are the same
+    print("\n\n\nTest whether toeplitz10000 is equal to itself\n")
     print(toeplitz10000 == toeplitz10000)
-    print("\n\n\n")
+    print("\n\n\nTest whether toeplitz10000 is equal to toeplitz100\n")
+    print(toeplitz10000 == toeplitz100)
     
     # add toeplitz
+    print("\n\n\nTesting adding two toeplitz10 matrices together\n")
     toeplitzSum = toeplitz10 + toeplitz10
     toeplitzSum.print_dense()
 
-
     # multiply toeplitz
+    print("\n\n\nTesting multiplying toeplitz10 and 100 with random vectors of their respective length\n")
     toeplitzProduct10 = toeplitz10 * np.random.randint(0,10,10)
     toeplitzProduct100 = toeplitz100 * np.random.randint(0,10,100)
-    print(f"\n\n\n{toeplitzProduct10}\n\n\n{toeplitzProduct100}\n\n\n")
+    print(f"{toeplitzProduct10}\n\n\n{toeplitzProduct100}\n\n\n")
 
     # Change element and print the new dense matrix
+    print("Change the element in row 3, col 7 to 88 and print the new matrix in dense format\n")
     toeplitz10.change_element(2, 6, 88)
     toeplitz10.print_dense()
     print("\n\n\n")
@@ -496,50 +490,3 @@ def task11():
 
 
 
-################################
-
-# test area.
-
-# Test change elements.
-matrix1 = np.array([[10, 20, 0, 0],
-                    [0, 30, 0, 40],
-                    [0, 0, 50, 60],
-                    [0, 0, 0, 0,],
-                    [0, 0, 0, 0,],
-                    [0, 0, 0, 0,]])
-
-test1 = SparseMatrix(matrix1)
-
-print("TASK 3 TESTING\n")
-
-print("Before changing")
-test1.print_internal_arrays()
-test1.change_element(0, 1, 50)
-test1.change_element(5, 3, 100)
-
-print("\nAfter changing elements")
-test1.print_internal_arrays()
-
-print("\nTASK 4 TESTING")
-print("After changing representation to CSC")
-test1.change_representation()
-test1.print_internal_arrays()
-
-matrix2 = np.array([[0, -49.9, 0, 0],
-                    [0, -29, 0, 0],
-                    [1, 0, -40, 0],
-                    [2, 0, 0, 0,],
-                    [0, 0, 0, 0,],
-                    [0, 0, 0, 0,]])
-test2 = SparseMatrix(matrix2)
-print("\nTASK 7 TESTING")
-print("Added matrices:")
-added_matrix = test1 + test2
-added_matrix.print_dense()
-
-test2 = SparseMatrix.toeplitz(5)
-vector = [1,2,1,1,1]
-test_mul = test2*vector
-
-print()
-print(test_mul)
