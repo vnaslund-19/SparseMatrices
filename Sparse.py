@@ -455,7 +455,7 @@ def task11():
     resultsScipySum = []
     resultsSparseMul = []
     resultsScipyMul = []
-    xAxis = list(range(98))
+    xAxis = list(range(2,100))
 
     for n in range(2, 100):
         toeplitzSparse = SparseMatrix.toeplitz(n) # Creates a toeplitzmatrix with SparseMatrix
